@@ -1,0 +1,33 @@
+stages:
+  - compile
+  - test
+  - build
+
+.setup-mvn: &setup-mvn
+  - chmod a+x mvnw
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+cache:
+  paths:
+    - .m2/repository/
+    - "**/target/"
+
+compile:
+  stage: compile
+  script:
+    - *setup-mvn
+    - echo "Compiling the application"
+
+test:
+  stage: test
+  script:
+    - *setup-mvn
+    - echo "Testing the application. This step produces test reports artifacts"
+
+build:
+  stage: build
+  script:
+    - *setup-mvn
+    - echo "Building the application. This step produces jar artifacts"
