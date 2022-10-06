@@ -1,11 +1,15 @@
 package eu.profinit.education.flightlog.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Before;
@@ -25,6 +29,12 @@ import eu.profinit.education.flightlog.to.PersonTo;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PersonServiceTest {
+
+    private static final List<String> PERSON_ROLES = Arrays.asList("PILOT");
+
+    private static final String PERSON_LAST_NAME = "Spoustová";
+
+    private static final String PERSON_FIRST_NAME = "Kamila";
 
     @Mock
     private PersonRepository personRepository;
@@ -74,8 +84,11 @@ public class PersonServiceTest {
                 .memberId(2L)
                 .build();
 
-        User testUser = new User(2L, "Kamila", "Spoustová", Arrays.asList("PILOT"));
-        Person clubMemberFromDd = Person.builder().personType(Person.Type.CLUB_MEMBER).memberId(2L).build();
+        User testUser = new User(2L, PERSON_FIRST_NAME, PERSON_LAST_NAME, PERSON_ROLES);
+        Person clubMemberFromDd = Person.builder()
+                .personType(Person.Type.CLUB_MEMBER)
+                .memberId(2L)
+                .build();
 
         // mock behaviour
         when(personRepository.findByMemberId(2L)).thenReturn(Optional.of(clubMemberFromDd));
