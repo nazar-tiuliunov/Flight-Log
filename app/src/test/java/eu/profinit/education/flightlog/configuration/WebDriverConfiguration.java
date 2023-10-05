@@ -20,7 +20,8 @@ public class WebDriverConfiguration {
     public WebDriver chromeDriver() {
         WebDriverManager.chromedriver().setup();
         ChromeOptions options = new ChromeOptions();
-        options.setHeadless(true);
+        // Remove if you want to see Selenium "click"
+        options.addArguments("--headless");
         return new ChromeDriver(options);
     }
 }
