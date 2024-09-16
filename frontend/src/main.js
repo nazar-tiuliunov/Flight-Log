@@ -1,7 +1,7 @@
 import environment from './environment';
-import { PLATFORM } from 'aurelia-pal';
+import {PLATFORM} from 'aurelia-pal';
 import * as Bluebird from 'bluebird';
-import { HttpClient } from 'aurelia-fetch-client';
+import {HttpClient} from 'aurelia-fetch-client';
 
 
 // remove out if you don't want a Promise polyfill (remove also from webpack.config.js)
@@ -14,27 +14,29 @@ export function configure(aurelia) {
 
   let container = aurelia.container;
 
+  console.log("Environment: ", environment)
+
   let http = new HttpClient();
   http.configure(config => {
     config
-      .useStandardConfiguration()
-      .withBaseUrl('/') // It used to be http://localhost:8081, but let it use default host
-      .withDefaults({
-        headers: {
-          'Accept': 'application/json'
-        }
-      })
-      .withInterceptor({
-        request(request) {
-          console.log(`Requesting ${request.method} ${request.url}`);
-          return request;
-        },
-        response(response) {
-          console.log(`Received ${response.status} ${response.url}`);
-          return response;
-        }
-      });
-  });
+    .useStandardConfiguration()
+    .withBaseUrl(environment.backendUrl)
+    .withDefaults({
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+    .withInterceptor({
+      request(request) {
+        console.log(`Requesting ${request.method} ${request.url}`);
+        return request;
+      },
+      response(response) {
+        console.log(`Received ${response.status} ${response.url}`);
+        return response;
+      }
+    });
+});
 
   container.registerInstance(HttpClient, http);
 

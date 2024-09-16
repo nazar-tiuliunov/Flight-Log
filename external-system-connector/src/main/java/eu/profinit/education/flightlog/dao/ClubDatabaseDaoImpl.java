@@ -22,12 +22,12 @@ public class ClubDatabaseDaoImpl implements ClubDatabaseDao {
         this.clubDbBaseUrl = clubDbBaseUrl;
     }
 
-
     @Override
     public List<User> getUsers() {
         User[] userList;
         try {
             userList = restTemplate.getForObject(clubDbBaseUrl + "/club/user", User[].class);
+
         } catch (RuntimeException e) {
             throw new ExternalSystemException("Cannot get users from Club database. URL: {}. Call resulted in exception.", e, clubDbBaseUrl);
         }
