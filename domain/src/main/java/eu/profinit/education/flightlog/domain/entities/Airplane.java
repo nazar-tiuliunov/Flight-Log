@@ -2,16 +2,15 @@ package eu.profinit.education.flightlog.domain.entities;
 
 import eu.profinit.education.flightlog.domain.JpaConstants;
 import eu.profinit.education.flightlog.domain.codebooks.ClubAirplane;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import javax.persistence.Embeddable;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 
 import static lombok.AccessLevel.PACKAGE;
 import static lombok.AccessLevel.PRIVATE;
@@ -25,7 +24,7 @@ import static lombok.AccessLevel.PRIVATE;
 @AllArgsConstructor(access = PRIVATE)
 public class Airplane {
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = JpaConstants.Columns.REGISTERED_AIRPLANE_ID)
     private ClubAirplane clubAirplane;
 

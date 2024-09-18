@@ -1,18 +1,11 @@
-package eu.profinit.education.flightlog.security;
+package eu.profinit.education.flightlog;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
-@Configuration
-@EnableWebSecurity
-public class SecurityConfig {
-    @Bean
-    public WebSecurityCustomizer ignoringCustomizer() {
-        return web -> web.ignoring().anyRequest();
-    }
+@ComponentScan
+public class IntegrationTestConfig {
 
     @Bean
     public CommonsRequestLoggingFilter logFilter() {
@@ -25,4 +18,5 @@ public class SecurityConfig {
         filter.setAfterMessagePrefix("REQUEST DATA : ");
         return filter;
     }
+
 }

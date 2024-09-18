@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AirplaneController {
 
+
     private final AirplaneService flightService;
 
     @GetMapping("/airplane")

@@ -1,18 +1,20 @@
 package eu.profinit.education.flightlog.to;
 
-import java.nio.charset.Charset;
-
+import lombok.EqualsAndHashCode;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 import org.springframework.http.MediaType;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-@Data
-@AllArgsConstructor
+@Value
+@Jacksonized
 public class FileExportTo {
 
-    private String fileName;
-    private MediaType contentType;
-    private Charset encoding;
-    private byte[] content;
+    String fileName;
+
+    MediaType contentType;
+
+    String encoding;
+
+    @EqualsAndHashCode.Exclude
+    byte[] content;
 }

@@ -1,24 +1,20 @@
 package eu.profinit.education.flightlog.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.AdditionalAnswers;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import eu.profinit.education.flightlog.dao.ClubDatabaseDao;
 import eu.profinit.education.flightlog.dao.User;
@@ -27,14 +23,8 @@ import eu.profinit.education.flightlog.domain.repositories.PersonRepository;
 import eu.profinit.education.flightlog.to.AddressTo;
 import eu.profinit.education.flightlog.to.PersonTo;
 
-@RunWith(MockitoJUnitRunner.class)
-public class PersonServiceTest {
-
-    private static final List<String> PERSON_ROLES = Arrays.asList("PILOT");
-
-    private static final String PERSON_LAST_NAME = "Spoustová";
-
-    private static final String PERSON_FIRST_NAME = "Kamila";
+@ExtendWith(MockitoExtension.class)
+class PersonServiceTest {
 
     @Mock
     private PersonRepository personRepository;
@@ -44,23 +34,23 @@ public class PersonServiceTest {
 
     private PersonServiceImpl testSubject;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         testSubject = new PersonServiceImpl(personRepository, clubDatabaseDao);
     }
 
     @Test
-    public void shouldCreateGuest() {
+    void shouldCreateGuest() {
         // prepare data
         PersonTo guestToCreate = PersonTo.builder()
-                .firstName("Jan")
-                .lastName("Novák")
-                .address(AddressTo.builder()
-                        .street("Tychonova 2")
-                        .city("Praha 6")
-                        .postalCode("16000")
-                        .build())
-                .build();
+            .firstName("Jan")
+            .lastName("Novák")
+            .address(AddressTo.builder()
+                .street("Tychonova 2")
+                .city("Praha 6")
+                .postalCode("16000")
+                .build())
+            .build();
 
         // mock behaviour
         when(personRepository.save(any())).thenAnswer(AdditionalAnswers.returnsFirstArg());
@@ -69,43 +59,38 @@ public class PersonServiceTest {
         Person person = testSubject.getExistingOrCreatePerson(guestToCreate);
 
         // verify results
-        assertEquals("Person type does not match", Person.Type.GUEST, person.getPersonType());
-        assertEquals("First name does not match", guestToCreate.getFirstName(), person.getFirstName());
-        assertEquals("Last name does not match", guestToCreate.getLastName(), person.getLastName());
+        assertEquals(Person.Type.GUEST, person.getPersonType(), "Person type does not match");
+        assertEquals(guestToCreate.getFirstName(), person.getFirstName(), "First name does not match");
+        assertEquals(guestToCreate.getLastName(), person.getLastName(), "Last name does not match");
 
-        assertEquals("Strear does not match", guestToCreate.getAddress().getStreet(), person.getAddress().getStreet());
+        assertEquals(guestToCreate.getAddress().getStreet(), person.getAddress().getStreet(), "Strear does not match");
 
     }
 
     @Test
-    public void shouldReturnExistingClubMember() {
+    void shouldReturnExistingClubMember() {
         // prepare data
         PersonTo existingClubMember = PersonTo.builder()
-                .memberId(2L)
-                .build();
+            .memberId(2L)
+            .build();
 
-        User testUser = new User(2L, PERSON_FIRST_NAME, PERSON_LAST_NAME, PERSON_ROLES);
-        Person clubMemberFromDd = Person.builder()
-                .personType(Person.Type.CLUB_MEMBER)
-                .memberId(2L)
-                .build();
+        User testUser = new User(2L, "Kamila", "Spoustová", List.of("PILOT"));
+        Person clubMemberFromDd = Person.builder().personType(Person.Type.CLUB_MEMBER).memberId(2L).build();
 
         // mock behaviour
         when(personRepository.findByMemberId(2L)).thenReturn(Optional.of(clubMemberFromDd));
-        when(clubDatabaseDao.getUsers()).thenReturn(Arrays.asList(testUser));
+        when(clubDatabaseDao.getUsers()).thenReturn(List.of(testUser));
 
         // call tested method
         Person person = testSubject.getExistingOrCreatePerson(existingClubMember);
 
         // verify results
-        assertTrue("Should return prepared instance", clubMemberFromDd == person);
-
+        assertSame(clubMemberFromDd, person, "Should return prepared instance");
     }
 
-    @Ignore("Test is not implemented")
+    @Disabled("Test is not implemented")
     @Test
     public void shouldCreateNewClubMember() {
         // TODO tutorial-3.4: Implement a test using Mock
     }
-
 }

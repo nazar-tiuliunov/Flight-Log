@@ -14,10 +14,15 @@ public interface FlightRepository extends JpaRepository<Flight, Long> {
 
     List<Flight> findAllByLandingTimeNullOrderByTakeoffTimeAscIdAsc();
 
+
+    /**
+     * It's expected that this query will be used to populate
+     * a list of BuildingBlockSummaryTo instances.
+     */
     @EntityGraph(
         type = EntityGraph.EntityGraphType.LOAD,
         attributePaths = {"pilot", "copilot", "gliderFlight", "gliderFlight.pilot", "gliderFlight.copilot"}
     )
     List<Flight> findAllByLandingTimeNotNullAndFlightTypeOrderByTakeoffTimeDescIdAsc(Flight.Type flightType, Pageable pageable);
-
 }
+

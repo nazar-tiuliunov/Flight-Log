@@ -6,15 +6,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Task {
 
-    public static Task TOWPLANE_TASK = new Task("VLEK");
+    public static final Task TOWPLANE_TASK = new Task("VLEK");
 
     @Getter
     @Column(name= JpaConstants.Columns.TASK)

@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 
 import static lombok.AccessLevel.PACKAGE;
 
@@ -23,4 +23,3 @@ public class Address {
     private String postalCode;
     private String country;
 }
-

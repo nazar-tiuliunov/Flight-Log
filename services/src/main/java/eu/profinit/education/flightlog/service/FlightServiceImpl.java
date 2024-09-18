@@ -2,7 +2,6 @@ package eu.profinit.education.flightlog.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -64,8 +63,7 @@ public class FlightServiceImpl implements FlightService {
         Person pilot = personService.getExistingOrCreatePerson(flightStart.getTowplane().getPilot());
         Person copilot = personService.getExistingOrCreatePerson(flightStart.getTowplane().getCopilot());
 
-        Flight flight = new Flight(Flight.Type.TOWPLANE, Task.TOWPLANE_TASK, flightStart.getTakeoffTime(), airplane,
-                pilot, copilot, flightStart.getTowplane().getNote());
+        Flight flight = new Flight(Flight.Type.TOWPLANE, Task.TOWPLANE_TASK, flightStart.getTakeoffTime(), airplane, pilot, copilot, flightStart.getTowplane().getNote());
         return flightRepository.save(flight);
     }
 
@@ -78,15 +76,13 @@ public class FlightServiceImpl implements FlightService {
         Person pilot = personService.getExistingOrCreatePerson(flightStart.getGlider().getPilot());
         Person copilot = personService.getExistingOrCreatePerson(flightStart.getGlider().getCopilot());
 
-        Flight flight = new Flight(Flight.Type.GLIDER, Task.of(flightStart.getTask()), flightStart.getTakeoffTime(),
-                airplane, pilot, copilot, flightStart.getGlider().getNote());
+        Flight flight = new Flight(Flight.Type.GLIDER, Task.of(flightStart.getTask()), flightStart.getTakeoffTime(), airplane, pilot, copilot, flightStart.getGlider().getNote());
         return flightRepository.save(flight);
     }
 
     private Airplane getAirplane(AirplaneTo airplaneTo) {
         if (airplaneTo.getId() != null) {
-            return Airplane.clubAirplane(clubAirplaneRepository.findById(airplaneTo.getId())
-                    .orElseThrow(() -> new IllegalArgumentException("Club airplane does not exists")));
+            return Airplane.clubAirplane(clubAirplaneRepository.findById(airplaneTo.getId()).orElseThrow(() -> new IllegalArgumentException("Club airplane does not exists")));
         } else {
             return Airplane.guestAirplane(airplaneTo.getImmatriculation(), airplaneTo.getType());
         }
@@ -98,11 +94,9 @@ public class FlightServiceImpl implements FlightService {
         if (landingTime == null) {
             landingTime = clock.now();
         }
-        Flight flight = flightRepository.findById(flightId.getId())
-                .orElseThrow(() -> new NotFoundException("Flight with ID {} does not exists.", flightId));
+        Flight flight = flightRepository.findById(flightId.getId()).orElseThrow(() -> new NotFoundException("Flight with ID {} does not exists.", flightId));
         if (!landingTime.isAfter(flight.getTakeoffTime())) {
-            throw new ValidationException("Given landing time {} cannot be before takeoffTime {}", landingTime,
-                    flight.getTakeoffTime());
+            throw new ValidationException("Given landing time {} cannot be before takeoffTime {}", landingTime, flight.getTakeoffTime());
         }
         if (flight.getLandingTime() != null) {
             throw new ValidationException("Flight with ID {} has already landed", flight.getId());
@@ -115,18 +109,17 @@ public class FlightServiceImpl implements FlightService {
     @Transactional(readOnly = true)
     @Override
     public List<FlightTo> getFlightsInTheAir() {
-        return flightRepository.findAllByLandingTimeNullOrderByTakeoffTimeAscIdAsc().stream()
-                .map(FlightTo::fromEntity).collect(Collectors.toList());
+        List<Flight> flights = flightRepository.findAllByLandingTimeNullOrderByTakeoffTimeAscIdAsc();
+        return flights.stream().map(FlightTo::fromEntity).toList();
     }
 
     @Override
     public List<FlightTuppleTo> getFlightsForReport() {
-        List<Flight> flights = flightRepository.findAllByLandingTimeNotNullAndFlightTypeOrderByTakeoffTimeDescIdAsc(
-                Flight.Type.TOWPLANE, PageRequest.of(0, MAX_RECORDS_IN_GUI));
+        List<Flight> flights = flightRepository.findAllByLandingTimeNotNullAndFlightTypeOrderByTakeoffTimeDescIdAsc(Flight.Type.TOWPLANE, PageRequest.of(0, MAX_RECORDS_IN_GUI));
 
-        return flights.stream()
-                .map(flight -> new FlightTuppleTo(FlightTo.fromEntity(flight),
-                        FlightTo.fromEntity(flight.getGliderFlight())))
-                .collect(Collectors.toList());
+        return flights.stream().map(flight -> FlightTuppleTo.builder()
+            .towplane(FlightTo.fromEntity(flight))
+            .glider(FlightTo.fromEntity(flight.getGliderFlight()))
+            .build()).toList();
     }
 }

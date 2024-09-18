@@ -1,47 +1,50 @@
 package eu.profinit.education.flightlog;
 
-import static org.junit.Assert.assertEquals;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import eu.profinit.education.flightlog.configuration.WebDriverConfiguration;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.extern.slf4j.Slf4j;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = WebDriverConfiguration.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @Slf4j
 @ActiveProfiles("inttest")
 public class FlightLogSeleniumTests {
 
-    @Autowired
-    public WebDriver webDriver;
+    WebDriver webDriver;
+
+    @BeforeAll
+    static void setupAll() {
+        WebDriverManager.chromedriver().setup();
+    }
+
 
     @Value("${application.url}")
     private String baseUrl;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        webDriver.get(baseUrl);
+        webDriver = new ChromeDriver();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         webDriver.quit();
     }
 
-    @Ignore("Test is not implemented")
+    @Disabled("Test is not implemented")
     @Test
     public void testAddNewFlight() throws Exception {
         // TODO tutorial-3.5: Implement an end to end test using Selenium that registers a new flight and checks whether it was created
