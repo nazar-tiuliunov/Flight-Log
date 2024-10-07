@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +26,10 @@ import eu.profinit.education.flightlog.to.PersonTo;
 
 @ExtendWith(MockitoExtension.class)
 class PersonServiceTest {
+
+    private static final List<String> PERSON_ROLES = Arrays.asList("PILOT");
+    private static final String PERSON_LAST_NAME = "Spoustová";
+    private static final String PERSON_FIRST_NAME = "Kamila";
 
     @Mock
     private PersonRepository personRepository;
