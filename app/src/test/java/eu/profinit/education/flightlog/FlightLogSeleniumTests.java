@@ -51,9 +51,42 @@ public class FlightLogSeleniumTests {
         webDriver.quit();
     }
 
-    @Disabled("Test is not implemented")
     @Test
     public void testAddNewFlight() throws Exception {
-        // TODO tutorial-3.5: Implement an end to end test using Selenium that registers a new flight and checks whether it was created
+        webDriver.get(baseUrl);
+        // wait till the application is fully loaded
+        new WebDriverWait(webDriver, Duration.ofSeconds(25)).until(ExpectedConditions.numberOfElementsToBe(By.xpath("//tbody//tr"), 1));
+        // get the number of flights already registered, there should already be one
+        int numberOfRegisteredFlightsBefore = webDriver.findElements(By.xpath("//tbody//tr")).size();
+        assertEquals( 1, numberOfRegisteredFlightsBefore,"There is a one flight at the start of the application");
+
+        // open new flight tab
+        webDriver.findElement(By.xpath("/html/body/div/div/ul/li[2]/a")).click();
+
+        // fill in information about a flight and confirm it
+        webDriver.findElement(By.xpath("//*[@id=\"takeoffTime\"]")).sendKeys("27100020221830");
+        webDriver.findElement(By.xpath("/html/body/router-view/div/form/compose[2]/compose/div[1]/div/div/label[3]")).click();
+        // let's wait till the pilots will be loaded into the form
+        new WebDriverWait(webDriver, Duration.ofSeconds(30))
+            .until(ExpectedConditions.presenceOfNestedElementsLocatedBy(
+                By.xpath("/html/body/router-view/div/form/compose[1]/div[2]/compose/div[3]/div/select"),
+                By.tagName("option")));
+        webDriver.findElement(By.xpath("/html/body/router-view/div/form/div[2]/div/button")).click();
+
+        // let's wait till the data will be processed and saved
+        new WebDriverWait(webDriver, Duration.ofSeconds(60)).until(ExpectedConditions.alertIsPresent());
+        webDriver.switchTo().alert().accept();
+
+        // move to a list of all flights
+        webDriver.findElement(By.xpath("/html/body/div/div/ul/li[1]/a")).click();
+        // wait till records will appear on the page
+        new WebDriverWait(webDriver, Duration.ofSeconds(5))
+            .until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//tbody//tr")));
+
+        // get a list of created flights
+        int numberOfRegisteredFlightsAfter = webDriver.findElements(By.xpath("//tbody//tr")).size();
+
+        // perform necessarry checks
+        assertEquals( 1,numberOfRegisteredFlightsAfter - numberOfRegisteredFlightsBefore,"There should be only one new flight created.");
     }
 }

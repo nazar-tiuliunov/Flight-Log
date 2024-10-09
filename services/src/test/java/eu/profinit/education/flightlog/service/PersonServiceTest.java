@@ -96,9 +96,23 @@ class PersonServiceTest {
         assertSame(clubMemberFromDd, person, "Should return prepared instance");
     }
 
-    @Disabled("Test is not implemented")
     @Test
     public void shouldCreateNewClubMember() {
-        // TODO tutorial-3.4: Implement a test using Mock
+        PersonTo nonExistingClubMember = PersonTo.builder()
+            .memberId(2L)
+            .build();
+        User testUser = new User(2L, PERSON_FIRST_NAME, PERSON_LAST_NAME, PERSON_ROLES);
+
+        when(personRepository.findByMemberId(2L)).thenReturn(Optional.empty());
+        when(clubDatabaseDao.getUsers()).thenReturn(Arrays.asList(testUser));
+        when(personRepository.save(any(Person.class))).thenAnswer(AdditionalAnswers.returnsFirstArg());
+
+        Person createdPerson = testSubject.getExistingOrCreatePerson(nonExistingClubMember);
+
+        verify(personRepository, times(1)).save(any(Person.class));
+        assertSame(Person.Type.CLUB_MEMBER, createdPerson.getPersonType());
+        assertSame(2l, createdPerson.getMemberId());
+        assertSame(PERSON_FIRST_NAME, createdPerson.getFirstName());
+        assertSame(PERSON_LAST_NAME, createdPerson.getLastName());
     }
 }
