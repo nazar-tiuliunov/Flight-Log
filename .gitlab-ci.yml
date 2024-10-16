@@ -34,6 +34,14 @@ test:
       junit:
         - "**/target/surefire-reports/TEST-*.xml"
 
+check:
+  stage: build
+  image: ${CI_REGISTRY}/bi-ido/bi-ido-registry/maven:3.8.6-openjdk-18
+  script:
+    - chmod a+x mvnw
+    - ./mvnw clean compile
+    - ./mvnw sonar:sonar -Dsonar.projectKey=flight-log-[username] -Dsonar.projectName=flight-log-[username] -Dsonar.host.url=$SONAR_URL -Dsonar.token=$SONAR_TOKEN
+
 build:
   stage: build
   image: ${CI_REGISTRY}/bi-ido/bi-ido-registry/maven:3.8.6-openjdk-18
