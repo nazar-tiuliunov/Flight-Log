@@ -3,6 +3,7 @@ stages:
   - test
   - check
   - build
+  - package
 
 .setup-mvn: &setup-mvn
   - chmod a+x mvnw
