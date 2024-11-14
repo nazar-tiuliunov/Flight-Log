@@ -1,5 +1,5 @@
 # Flightlog
-
+This project was migrated from private GitLab repository. Used only for DevOps practices
 - app 
     - contains a web server  
     - static content for frontend
