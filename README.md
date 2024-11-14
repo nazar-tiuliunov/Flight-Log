@@ -1,15 +1,15 @@
-# Flightlog (solution)
+# Flightlog
 
 - app 
-    - obsahuje webový server 
-    - statický obsah pro frontend
+    - contains a web server  
+    - static content for frontend
 - rest 
-    – vystavuje REST API pro frontend
+    – exposes a REST API for the frontend
 - service 
-    – servisní vrstva – obsahuje byznys logiku
+    – service layer - contains business logic
 - domain
-     – obsahuje doménový model a připojení do DB
+     – contains domain model and DB connection
 - external-system-connector
-     – obsahuje integrace na externí služby
+     – contains integrations to external services
 - common
-     – obsahuje třídy společné pro všechny moduly
+     – contains classes common to all modules
